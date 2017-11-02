@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>チェックツール</title>	
+<style type="text/css">
+* {font-family: "メイリオ",Meiryo,sans-serif; }
+label {font-size: 90%;}
+#my_search_text, #my_replace_text {width: 90px;}
+#reportArea { boder:1px solid #ccc; font-size: 90%; width: 600px; height: 200px; overflow: scroll;}
+</style>
+</head>
+<body onload="create_guidelines(); create_survey_flag(); create_pageids();">
+
+<script type="text/javascript">
+var guidelines = [
+  "7.1.1.1",
+  "7.1.2.1",
+  "7.1.2.2",
+  "7.1.2.3",
+  "7.1.2.4",
+  "7.1.2.5",
+  "7.1.3.1",
+  "7.1.3.2",
+  "7.1.3.3",
+  "7.1.4.1",
+  "7.1.4.2",
+  "7.1.4.3",
+  "7.1.4.4",
+  "7.1.4.5",
+  "7.2.1.1",
+  "7.2.1.2",
+  "7.2.2.1",
+  "7.2.2.2",
+  "7.2.3.1",
+  "7.2.4.1",
+  "7.2.4.2",
+  "7.2.4.3",
+  "7.2.4.4",
+  "7.2.4.5",
+  "7.2.4.6",
+  "7.2.4.7",
+  "7.3.1.1",
+  "7.3.1.2",
+  "7.3.2.1",
+  "7.3.2.2",
+  "7.3.2.3",
+  "7.3.2.4",
+  "7.3.3.1",
+  "7.3.3.2",
+  "7.3.3.3",
+  "7.3.3.4",
+  "7.4.1.1",
+  "7.4.1.2"
+];
+var surveyarr = {
+  "all":"全て",
+  "uc":"未",
+  "ok":"適合",
+  "ok2":"適合(注記)",
+  "fail":"不適合",
+  "fail2":"不適合(要再判定)",
+  "na":"非適用"
+};
+var tblmap = {
+  "7.1.1.1" : 2,
+  "7.1.2.1" : 3,
+  "7.1.2.2" : 4,
+  "7.1.2.3" : 5,
+  "7.1.3.1" : 6,
+  "7.1.3.2" : 7,
+  "7.1.3.3" : 8,
+  "7.1.4.1" : 9,
+  "7.1.4.2" : 10,
+  "7.2.1.1" : 11,
+  "7.2.1.2" : 12,
+  "7.2.2.1" : 13,
+  "7.2.2.2" : 14,
+  "7.2.3.1" : 15,
+  "7.2.4.1" : 16,
+  "7.2.4.2" : 17,
+  "7.2.4.3" : 18,
+  "7.2.4.4" : 19,
+  "7.3.1.1" : 20,
+  "7.3.2.1" : 21,
+  "7.3.2.2" : 22,
+  "7.3.3.1" : 23,
+  "7.3.3.2" : 24,
+  "7.4.1.1" : 25,
+  "7.4.1.2" : 26,
+  "7.1.2.4" : 27,
+  "7.1.2.5" : 28,
+  "7.1.4.3" : 29,
+  "7.1.4.4" : 30,
+  "7.1.4.5" : 31,
+  "7.2.4.5" : 32,
+  "7.2.4.6" : 33,
+  "7.2.4.7" : 34,
+  "7.3.1.2" : 35,
+  "7.3.2.3" : 36,
+  "7.3.2.4" : 37,
+  "7.3.3.3" : 38,
+  "7.3.3.4" : 39
+};
+function create_survey_flag(){
+  var select = document.getElementById("pup_survey_flag");
+  for(var key in surveyarr) {
+    var elm = document.createElement("option");
+    elm.setAttribute("value", key);
+    elm.textContent = surveyarr[key].toString();
+    select.appendChild(elm);
+  }
+}
+function create_guidelines(){
+  var select = document.getElementById("pup_guideline_id");
+  for(var i=0; i<guidelines.length; i++) {
+    var elm = document.createElement("option");
+    elm.setAttribute("value", guidelines[i].toString());
+    elm.textContent = guidelines[i].toString();
+    select.appendChild(elm);
+  }
+}
+function create_pageids() {
+  var select = document.getElementById("pup_page_id");
+  var pgarr = new Array();
+  var tbl = document.getElementsByTagName("table").item(2);
+  var tr = tbl.rows;
+  for(var i=0; i<tr.length; i++) {
+    if(i < 2) continue;
+    var row = tr.item(i);
+    var pgid = row.cells.item(0).innerHTML;
+    pgarr.push(pgid);
+  }
+  for(var i=0; i<pgarr.length; i++) {
+    var elm = document.createElement("option");
+    elm.setAttribute("value", pgarr[i].toString());
+    elm.textContent = pgarr[i].toString();
+    select.appendChild(elm);
+  }
+}
+function do_marking() {
+  var target_src = document.getElementById("pup_guideline_id");
+  var target = target_src.options[target_src.selectedIndex].text;
+  target += "/";
+  var tbl = document.getElementsByTagName("table").item(2);
+  var tr = tbl.rows;
+  for(var i=0; i<tr.length; i++) {
+    var row = tr.item(i);
+    if(i < 2) continue;
+    for(var j=0; j<row.cells.length; j++) {
+      if(j < 2) continue;
+      var col = row.cells.item(j);
+      var href = col.getElementsByTagName("a").item(0);
+      var pat = new RegExp(target);
+      if(pat.test(href)) {
+        col.setAttribute("style", "background:yellow");
+      }
+    }
+  }
+}
+function do_unmarking() {
+  var target_src = document.getElementById("pup_guideline_id");
+  var target = target_src.options[target_src.selectedIndex].text;
+  target += "/";
+  var tbl = document.getElementsByTagName("table").item(2);
+  var tr = tbl.rows;
+  for(var i=0; i<tr.length; i++) {
+    var row = tr.item(i);
+    if(i < 2) continue;
+    for(var j=0; j<row.cells.length; j++) {
+      if(j < 2) continue;
+      var col = row.cells.item(j);
+      var href = col.getElementsByTagName("a").item(0);
+      var pat = new RegExp(target);
+      if(pat.test(href)) {
+        col.setAttribute("style", "");
+      }
+    }
+  }
+}
+function get_target_page_url(pgid, target) {
+  var ret = "";
+  var tbl = document.getElementsByTagName("table").item(2);
+  var tr = tbl.rows;
+  for(var i=0; i<tr.length; i++) {
+    if(i < 2) continue;
+    var row = tr.item(i);
+    var qpgid = row.cells.item(0).innerHTML;
+    if(qpgid == pgid) {
+      for(var j=0; j<row.cells.length; j++) {
+        if(j < 2) continue;
+        var col = row.cells.item(j);
+        var href = col.getElementsByTagName("a").item(0);
+        var pat = new RegExp(target);
+        if(pat.test(href)) {
+          ret = href;
+          break;
+        }
+      }
+    }
+  }
+  return ret;
+}
+function do_reporting() {
+  var select1 = document.getElementById("pup_guideline_id");
+  var target = select1.options[select1.selectedIndex].text;
+  var select2 = document.getElementById("pup_page_id");
+  var pgid = select2.options[select2.selectedIndex].text;
+  var select3 = document.getElementById("pup_survey_flag");
+  var svflg = select3.options[select3.selectedIndex].value;
+  var url = get_target_page_url(pgid, target);
+  var xmlHttp;
+  xmlHttp = new XMLHttpRequest();
+  xmlHttp.open("GET", url, false);
+  xmlHttp.send(null);
+  var result = xmlHttp.responseText;
+  result = result.replace(/(\r\n|\r|\n)/g,"");
+  var pat = new RegExp(/(<div class="list">)(.+?)(<\/div>)/);
+  var arr = result.match(pat);
+  var html = arr[2].toString();
+  var domps = new DOMParser();
+  var domhtml = domps.parseFromString(html, "text/html");
+  var domtbl = domhtml.getElementsByTagName("table").item(0);
+  var tr = domtbl.rows;
+  var htmlstr = '<table id="reportTable">';
+  for(var i=0; i<tr.length; i++) {
+    var row = tr.item(i);
+    var svtbl = tx_clean(row.cells.item(2).innerHTML);
+    if(svflg == "all") {
+      htmlstr += tr_create(row);
+    } else  {
+      if(i == 0) htmlstr += tr_create(row);
+      if(svflg == "uc" && svtbl == "未") {
+        htmlstr += tr_create(row);
+      }else if(svflg == "ok" && svtbl == "適合") {
+        htmlstr += tr_create(row);
+      }else if(svflg == "ok2" && svtbl == "適合(注記)") {
+        htmlstr += tr_create(row);
+      }else if(svflg == "fail" && svtbl == "不適合") {
+        htmlstr += tr_create(row);
+      }else if(svflg == "fail2" && svtbl == "不適合(要再判定)") {
+        htmlstr += tr_create(row);
+      }else if(svflg == "na" && svtbl == "非適用") {
+        htmlstr += tr_create(row);
+      }
+    }
+  }
+  var ckpat = new RegExp(/(<tr.*>.+?<\/tr>)/mg);
+  if(htmlstr.match(ckpat).length < 2) htmlstr += '<tr><td colspan="6">結果はありません</td></tr>';
+  htmlstr += "</table>";
+  document.getElementById("reportArea").innerHTML = htmlstr;
+}
+function tr_create(row) {
+  var html = "<tr>";
+  for(var j=0; j<row.cells.length; j++) {
+    if(j == 0) continue;
+    var cellstr = row.cells.item(j).innerHTML;
+    if(cellstr == "") cellstr = "なし";
+    html += "<td>" + cellstr + "</td>";
+  }
+  html += "</tr>";
+  return html;
+}
+function tx_clean(str) {
+  var pat = new RegExp(/\t+/g);
+  str = str.replace(pat, "");
+  return str;
+}
+function clear_reporting() {
+  document.getElementById("reportArea").innerHTML = "";
+}
+function do_marking_uncomp() {
+  var target = document.getElementById("uncomp_guideline_flag");
+  if(target.checked === true) {
+    do_marking_uncomp_by_guideline();
+  } else {
+    var tbl = document.getElementsByTagName("table").item(2);
+    var tr = tbl.rows;
+    for(var i=0; i<tr.length; i++) {
+      if(i < 2) continue;
+      var row = tr.item(i);
+      var first_cell = row.cells.item(0);
+      for(var j=0; j<row.cells.length; j++) {
+        if(j < 2) continue;
+        var cell = row.cells.item(j);
+        var cell_data = cell.getElementsByTagName("a").item(0).innerHTML;
+        if(cell_data == "－") {
+          first_cell.setAttribute("style", "background:yellow");
+        }
+      }
+    }
+  }
+}
+function do_unmarking_uncomp() {
+  var tbl = document.getElementsByTagName("table").item(2);
+  var tr = tbl.rows;
+  for(var i=0; i<tr.length; i++) {
+    if(i < 2) continue;
+    var row = tr.item(i);
+    row.cells.item(0).removeAttribute("style");
+  }
+}
+function do_marking_uncomp_by_guideline() {
+  var select1 = document.getElementById("pup_guideline_id");
+  var target = select1.options[select1.selectedIndex].text;
+  var idx = tblmap[target];
+  var tbl = document.getElementsByTagName("table").item(2);
+  var tr = tbl.rows;
+  for(var i=0; i<tr.length; i++) {
+    if(i < 2) continue;
+    var row = tr.item(i);
+    var first_cell = row.cells.item(0);
+    var cell = row.cells.item(idx);
+    var cell_data = cell.getElementsByTagName("a").item(0).innerHTML;
+    if(cell_data == "－") {
+      first_cell.setAttribute("style", "background:yellow");
+    }
+  }
+}
+</script>
+<h1>検査結果確認ツール</h1>
+<select id="pup_guideline_id"></select>
+<button onclick="do_marking()">色付実行</button>
+<button onclick="do_unmarking()">色付解除</button>
+<label><input type="checkbox" id="uncomp_guideline_flag" value="1">達成基準別</label>
+<button onclick="do_marking_uncomp()">未完色付</button>
+<button onclick="do_unmarking_uncomp()">未完色無</button>
+<select id="pup_page_id"></select>
+<select id="pup_survey_flag"></select>
+<button onclick="do_reporting()">参照</button>
+<button onclick="clear_reporting()">クリア</button>
+<div id="reportArea"></div>
+</body>
+</html>
