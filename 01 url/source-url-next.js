@@ -40,33 +40,24 @@ javascript:(function(){
 		},
 		survey_next: function() {
 			var element = d.getElementById("urlList");
-			for(var i=0; i<element.options.length;i++){
-				var idx=i+1;
-				if(idx == element.options.length){
-					alert("これ以上進めません！");
-					return;
-				}
-				if(element.options[i].selected){
-					element.options[idx].selected = true;
-					break;
-				}
+			var idx = element.selectedIndex;
+			idx++;
+			if(idx == element.options.length) {
+				alert("これ以上進めません！");
+				return;
 			}
+			element.selectedIndex = idx;
 			d.getElementById("submitURL").click();
 		},
 		survey_prev: function() {
-			var element=d.getElementById("urlList");
-			for(var i=0; i<element.options.length;i++){
-				if(element.options[i].selected){
-					var idx=i-1;
-					if(idx<0){
-						alert("これ以上戻れません！");
-						return;
-					}else{
-						element.options[idx].selected = true;
-						break;
-					}
-				}
+			var element = d.getElementById("urlList");
+			var idx = element.selectedIndex;
+			idx--;
+			if(idx < 0) {
+				alert("これ以上戻れません！");
+				return;
 			}
+			element.selectedIndex = idx;
 			d.getElementById("submitURL").click();
 		},
 		result_next: function() {
