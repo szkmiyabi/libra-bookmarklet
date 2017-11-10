@@ -258,41 +258,9 @@ javascript:(function(){
 	};
 	function surveyPackageUtil() {
 		this.util = new surveyDialogUtil();
+		this.tab_sp = "<bkmk:tab>";
+		this.br_sp = "<bkmk:br>";
 
-		this.survey_copy =  function() {
-			var txt = "";
-			var str_tech = "";
-			var str_sv = "";
-			var str_sv_cp = "";
-			var str_comment = "";
-			var str_description = "";
-			var str_srccode = "";
-			if(this.util.is_survey_page()) {
-				str_tech = this.util.get_tech();
-				str_sv = this.util.get_survey();
-				str_sv_cp = this.util.get_survey_cp();
-				str_comment = this.util.get_comment();
-				str_description = this.util.get_description();
-				str_srccode = this.util.get_srccode();
-				txt = str_tech + "\t" + str_sv + "\t" + str_sv_cp + "\t" + "who" + "\t";
-				txt += str_comment + "\t" + str_description + "\t" + str_srccode;
-			} else if(this.util.is_detail_page()) {
-				var sel = window.getSelection().toString();
-				sel = sel.trim();
-				if(!new RegExp(/\t/).test(sel)) return "";
-				var arr = sel.split("\t");
-				str_tech = arr[0];
-				str_sv = arr[1];
-				str_sv_cp = "no";
-				str_comment = this.util.get_safe_value(arr[3]);
-				str_description = this.util.get_safe_value(arr[4]);
-				str_srccode = this.util.get_safe_value(arr[5]);
-				txt = str_tech + "\t" + str_sv + "\t" + str_sv_cp + "\t" + "who" + "\t";
-				txt += str_comment + "\t" + str_description + "\t" + str_srccode;
-			}
-			prompt("Ctrl+Cでコピーしてください。", txt);
-
-		};
 		this.survey_paste = function() {
 			var src = prompt("コピーしたデータを貼り付けてください");
 			src = src.trim();
@@ -312,14 +280,14 @@ javascript:(function(){
 			var str_comment = "";
 			var str_description = "";
 			var str_srccode = "";
-			var tmp = data.split("\t");
+			var tmp = data.split(this.tab_sp);
 			if(tmp != null) {
 				str_sv = tmp[1].toString().trim();
 				str_sv_cp = tmp[2].toString().trim();
 				if(str_sv_cp === "") str_sv_cp = "no";
-				str_comment = this.util.get_safe_value(tmp[4]);
-				str_description = this.util.get_safe_value(tmp[5]);
-				str_srccode = this.util.get_safe_value(tmp[6]);
+				str_comment = this.br_decode(this.util.get_safe_value(tmp[4]));
+				str_description = this.br_decode(this.util.get_safe_value(tmp[5]));
+				str_srccode = this.br_decode(this.util.get_safe_value(tmp[6]));
 				arr.push(str_sv);
 				arr.push(str_sv_cp);
 				arr.push(str_comment);
@@ -342,6 +310,9 @@ javascript:(function(){
 			this.bkm_util.set_comment(arr[2]);
 			this.bkm_util.set_description(arr[3]);
 			this.bkm_util.set_srccode(arr[4]);
+		};
+		this.br_decode = function(str) {
+			return str.replace(new RegExp(this.br_sp, "mg"), "\r\n");
 		};
 	}
 

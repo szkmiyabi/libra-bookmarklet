@@ -171,6 +171,9 @@ javascript:(function(){
 		}
 	};
 	function surveyPackageUtil() {
+		this.tab_sp = "<bkmk:tab>";
+		this.br_sp = "<bkmk:br>";
+
 		this.util = new surveyDialogUtil();
 		this.survey_copy =  function() {
 			var txt = "";
@@ -184,11 +187,11 @@ javascript:(function(){
 				str_tech = this.util.get_tech();
 				str_sv = this.util.get_survey();
 				str_sv_cp = this.util.get_survey_cp();
-				str_comment = this.util.get_comment();
-				str_description = this.util.get_description();
-				str_srccode = this.util.get_srccode();
-				txt = str_tech + "\t" + str_sv + "\t" + str_sv_cp + "\t" + "who" + "\t";
-				txt += str_comment + "\t" + str_description + "\t" + str_srccode;
+				str_comment = this.br_encode(this.util.get_comment());
+				str_description = this.br_encode(this.util.get_description());
+				str_srccode = this.br_encode(this.util.get_srccode());
+				txt = str_tech + this.tab_sp + str_sv + this.tab_sp + str_sv_cp + this.tab_sp + "who" + this.tab_sp;
+				txt += str_comment + this.tab_sp + str_description + this.tab_sp + str_srccode;
 			} else if(this.util.is_detail_page()) {
 				var sel = window.getSelection().toString();
 				sel = sel.trim();
@@ -200,49 +203,16 @@ javascript:(function(){
 				str_comment = this.util.get_safe_value(arr[3]);
 				str_description = this.util.get_safe_value(arr[4]);
 				str_srccode = this.util.get_safe_value(arr[5]);
-				txt = str_tech + "\t" + str_sv + "\t" + str_sv_cp + "\t" + "who" + "\t";
-				txt += str_comment + "\t" + str_description + "\t" + str_srccode;
+				txt = str_tech + this.tab_sp + str_sv + this.tab_sp + str_sv_cp + this.tab_sp + "who" + this.tab_sp;
+				txt += str_comment + this.tab_sp + str_description + this.tab_sp + str_srccode;
 			}
 			prompt("Ctrl+Cでコピーしてください。", txt);
 
 		};
-		this.survey_paste = function() {
-			var src = prompt("コピーしたデータを貼り付けてください");
-			src = src.trim();
-			var arr = this.survey_paste_data_bind(src);
-			var key = this.util.get_survey_key(arr[0]);
-			this.util.set_survey(key);
-			var cp_key = this.util.get_survey_cp_key(arr[1]);
-			this.util.set_survey_copy(cp_key);
-			this.util.set_comment(arr[2]);
-			this.util.set_description(arr[3]);
-			this.util.set_srccode(arr[4]);
+		this.br_encode = function(str) {
+			return str.replace(/(\r|\n|\r\n)/mg, this.br_sp);
 		};
-		this.survey_paste_data_bind = function(data) {
-			var arr = new Array();
-			var str_sv = "";
-			var str_sv_cp = "";
-			var str_comment = "";
-			var str_description = "";
-			var str_srccode = "";
-			var tmp = data.split("\t");
-			if(tmp != null) {
-				str_sv = tmp[1].toString().trim();
-				str_sv_cp = tmp[2].toString().trim();
-				if(str_sv_cp === "") str_sv_cp = "no";
-				str_comment = this.util.get_safe_value(tmp[4]);
-				str_description = this.util.get_safe_value(tmp[5]);
-				str_srccode = this.util.get_safe_value(tmp[6]);
-				arr.push(str_sv);
-				arr.push(str_sv_cp);
-				arr.push(str_comment);
-				arr.push(str_description);
-				arr.push(str_srccode);
-				return arr;
-			} else {
-				return null;
-			}
-		};
+
 	}
 
 	var pkg = new surveyPackageUtil();
