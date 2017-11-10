@@ -314,12 +314,16 @@ javascript:(function(){
 			txt += "判定コメント:\n" + this.safty_val(tmp[3]) + "\n";
 			txt += "対象ソース:\n" + this.safty_val(tmp[4]) + "\n";
 			txt += "修正ソース:\n" + this.safty_val(tmp[5]) + "";
-			alert(txt);
+			jAlert(this.str_escaping(txt));
 		};
 		this.safty_val = function(elm) {
 			if(typeof elm == "undefined") return "";
 			else return elm;
 		};
+		this.str_escaping = function(str) {
+			return str.replace(/</mg, "&lt;").replace(/>/mg, "&gt;").replace(/\n/mg, "<br>");
+		};
+
 	}
 
 	var util = new repoUtilClass();
