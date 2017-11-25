@@ -283,6 +283,7 @@ javascript:(function(){
 			var url = this.get_this_url();
 			if(this.pt3.test(url)) {
 				var burl = url.match(this.pt3)[1];
+				burl = this.original_encodeURI(burl);
 				window.open('http://validator.w3.org/check?ss=1&group=1&verbose=1&uri=' + burl, "_blank");
 			}else{
 				alert("エラーです。");
@@ -322,6 +323,9 @@ javascript:(function(){
 		};
 		this.str_escaping = function(str) {
 			return str.replace(/</mg, "&lt;").replace(/>/mg, "&gt;").replace(/\n/mg, "<br>");
+		};
+		this.original_encodeURI = function(str) {
+			return str.replace(/&/g, "%26").replace(/\?/g, "%3F");
 		};
 
 	}
