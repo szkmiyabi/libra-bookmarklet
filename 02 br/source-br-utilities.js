@@ -283,7 +283,7 @@ javascript:(function(){
 			var url = this.get_this_url();
 			if(this.pt3.test(url)) {
 				var burl = url.match(this.pt3)[1];
-				window.open('http://validator.w3.org/check?ss=1&group=0&verbose=1&uri=' + burl, "_blank");
+				window.open('http://validator.w3.org/check?ss=1&group=1&verbose=1&uri=' + burl, "_blank");
 			}else{
 				alert("エラーです。");
 			}
