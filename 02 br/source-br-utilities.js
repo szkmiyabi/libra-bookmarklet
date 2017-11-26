@@ -274,10 +274,14 @@ javascript:(function(){
 		this.browse_page = function() {
 			var url = this.get_this_url();
 			if(url != null) {
+				url = this.original_amp_decode(url);
 				window.open(url, "_blank");
 			}else{
 				alert("エラーです。");
 			}
+		};
+		this.original_amp_decode = function(str) {
+			return str.replace(/(&amp;|%26)/, "&");
 		};
 		this.validate_page = function() {
 			var url = this.get_this_url();
