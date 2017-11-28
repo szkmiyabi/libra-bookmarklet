@@ -47,9 +47,12 @@ javascript:(function(){
 			var pt = new RegExp(/http.*\/\/.*/);
 			if(pt.test(str)) {
 				var mt = str.match(pt);
-				return mt[0].toString();
+				return this.amp_decode(mt[0].toString());
 			}
 			return "";
+		},
+		amp_decode: function(str) {
+			return str.replace(/(&amp;|%26)/, "&");
 		}
 	};
 
