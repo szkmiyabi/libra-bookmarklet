@@ -1,12 +1,13 @@
 /*-----------------------------------------------------
  *
- 	自動一括検査（条件分岐による処理の雛形）
+ 	自動一括検査  （条件分岐による処理の雛形）
  *
 ------------------------------------------------------*/
 javascript:(function(){
 	function allDiagClass() {
 		tbl = document.getElementsByTagName("table").item(2);
 		flags = {
+			"UNCOMP": "CHECK",
 			"PASS": "PASS_HC",
 			"PASS2": "PASS2",
 			"FAIL": "FAIL_HC",
@@ -131,6 +132,26 @@ javascript:(function(){
 		var srccode_obj = diag.srccode_obj(row);
 
 		/* ---- main処理 ---- */
+
+		/* ---- 以下はサンプルコードのため、実装時には撤去すること ---- */
+		/* 判定を取得 */
+		var survey = diag.get_survey(survey_obj);
+		/* 未判定の場合のみ、処理を実行 */
+		if(survey==="UNCOMP") {
+			/* 不適合を選択 */
+			diag.set_survey(survey_obj, "FAIL");
+			/* 判定コメントをセット */
+			diag.set_text(comment_obj, "別ウィンドウで開くことの明示無し");
+			/* 対象ソースを取得 */
+			var description = diag.get_text(description_obj);
+			/* <a>タグの正規表現パターンを定義 */
+			var pt = new RegExp(/(<a .+?>)(.+?)(<\/a>)/);
+			/* 正規表現置換で、<a>閉じタグの直前に、(別ウィンドウ)と追記する */
+			var newsrccode = description.replace(pt, "$1$2(別ウィンドウ）$3");
+			/* それを、修正ソースコードに、セット */
+			diag.set_text(srccode_obj, newsrccode);
+		}
+		/* ---- サンプルコードここまで ---- */
 
 	}
 
