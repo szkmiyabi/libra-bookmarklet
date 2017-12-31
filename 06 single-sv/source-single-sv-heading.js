@@ -83,7 +83,8 @@ javascript:(function(){
 			if(rds !== "undefined") {
 				for(var i=0; i<rds.length; i++) {
 					var val = rds[i].value;
-					if(val===flag) {
+					var kval = cp_hash[val];
+					if(kval===flag) {
 						rds[i].click();
 						break;
 					}
