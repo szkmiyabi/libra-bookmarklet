@@ -5,6 +5,7 @@
 ------------------------------------------------------*/
 javascript:(function(){
 	function allDiagClass() {
+		heading = document.getElementsByTagName("table").item(0);
 		tbl = document.getElementsByTagName("table").item(2);
 		flags = {
 			"UNCOMP": "CHECK",
@@ -117,6 +118,11 @@ javascript:(function(){
 			str = str.replace(/(\r\n|\n)/mg, "");
 			str = str.replace(/\t/mg, "");
 			return str;
+		},
+		get_tech_code: function() {
+			var rows = heading.rows;
+			var row = rows.item(0);
+			return row.cells.item(5).innerText;
 		}
 	};
 
