@@ -185,6 +185,7 @@ javascript:(function(){
 				new_img = tmp[1] + tmp[2] + ' alt="' + mystr + '"' + tmp[3];
 			}
 			this.util.set_srccode(new_img);
+			this.util.save();
 		}
 	};
 	/* オブジェクトをインスタンス化して実行 */
