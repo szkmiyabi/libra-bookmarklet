@@ -157,17 +157,6 @@ javascript:(function(){
 			if(pat.test(url)) return true;
 			else return false;
 		},
-		get_tech: function() {
-			var tech = "";
-			var techList = document.getElementById("techList");
-			tech = techList.options[techList.selectedIndex].value;
-			tech = tech.replace(/【完】/,"");
-			return tech;
-		},
-		get_safe_value: function(val) {
-			if(typeof val === "undefined") return "";
-			else return val;
-		},
 		get_survey_url: function() {
 			var long_url = "";
 			var sv_url = "";
@@ -179,6 +168,36 @@ javascript:(function(){
 				sv_url = mt[2].toString().trim();
 			}
 			return sv_url;
+		},
+		get_num: function() {
+			var num = "";
+			var pt = new RegExp(/(\[)([a-zA-Z0-9]+)(\])(.+)/);
+			var urlList = document.getElementById("urlList");
+			var cr_num = urlList.options[urlList.selectedIndex].text;
+			if(pt.test(cr_num)) {
+				var mt = cr_num.match(pt);
+				num = mt[2].toString().trim();
+			}
+			return num;
+		},
+		get_guideline: function() {
+			var guideline = "";
+			var guidelineList = document.getElementById("guideline");
+			guideline = guidelineList.options[guidelineList.selectedIndex].value;
+			guideline = guideline.replace(/【完】/,"");
+			guideline = guideline.replace(/\(A+\)/,"");
+			return guideline;
+		},
+		get_tech: function() {
+			var tech = "";
+			var techList = document.getElementById("techList");
+			tech = techList.options[techList.selectedIndex].value;
+			tech = tech.replace(/【完】/,"");
+			return tech;
+		},
+		get_safe_value: function(val) {
+			if(typeof val === "undefined") return "";
+			else return val;
 		}
 	};
 
@@ -209,6 +228,9 @@ javascript:(function(){
 				return this.sv_util.get_survey_url();
 			}
 		};
+		this.get_this_url_from_svpage = function() {
+			return this.sv_util.get_survey_url();
+		};
 		this.get_this_page_num = function() {
 				var rows = this.tbl.rows;
 				var rowdata = rows.item(1);
@@ -218,11 +240,20 @@ javascript:(function(){
 				}
 				else return null;	
 		};
+		this.get_this_page_num_from_svpage = function() {
+			return this.sv_util.get_num();
+		};
 		this.get_this_guideline = function() {
 				var rows = this.tbl.rows;
 				var rowdata = rows.item(2);
 				if(typeof rowdata != "undefined") return rowdata.cells.item(1).innerText;
 				else return null;
+		};
+		this.get_this_guideline_from_svpage = function() {
+			return this.sv_util.get_guideline();
+		};
+		this.get_this_tech_from_svpage = function() {
+			return this.sv_util.get_tech();
 		};
 		this.get_this_home_url = function(url) {
 			var mt = url.match(this.pt1);
@@ -321,6 +352,23 @@ javascript:(function(){
 			txt += "修正ソース:\n" + this.safty_val(tmp[5]) + "";
 			jAlert(this.str_escaping(txt));
 		};
+		this.browse_pasteboard_from_svpage = function() {
+			var txt = "";
+			var tt = this.get_select_text();
+			tt=tt.replace(/^ +/m,"");
+		    tt=tt.replace(/^\t+/m,"");
+			var tmp = tt.split("\t");
+			if(tmp.length == 0) return false;
+			txt += this.get_this_page_num_from_svpage() + "\n";
+			txt += this.get_this_url_from_svpage() + "\n";
+			txt += "達成基準: " + this.get_this_guideline_from_svpage() + "\n";
+			txt += "達成方法番号: " + this.get_this_tech_from_svpage() + "\n";
+			txt += "判定: " + tmp[1] + "\n";
+			txt += "判定コメント:\n" + this.safty_val(tmp[3]) + "\n";
+			txt += "対象ソース:\n" + this.safty_val(tmp[4]) + "\n";
+			txt += "修正ソース:\n" + this.safty_val(tmp[5]) + "";
+			jAlert(this.str_escaping(txt));
+		};
 		this.safty_val = function(elm) {
 			if(typeof elm == "undefined") return "";
 			else return elm;
@@ -338,7 +386,8 @@ javascript:(function(){
 	if(util.is_text_select()) {
 		if(util.is_validate_tech_selected()) util.validate_page();
 		else if(util.is_other_css_selected()) util.import_other_css();
-		else if(util.is_table_row_selected()) util.browse_pasteboard();
+		else if(util.is_table_row_selected() && util.sv_util.is_detail_page()) util.browse_pasteboard();
+		else if(util.is_table_row_selected() && util.sv_util.is_survey_page()) util.browse_pasteboard_from_svpage();
 		else util.browse_image();
 	} else {
 		util.browse_page();
