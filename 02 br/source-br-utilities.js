@@ -363,10 +363,10 @@ javascript:(function(){
 			txt += this.get_this_url_from_svpage() + "\n";
 			txt += "達成基準: " + this.get_this_guideline_from_svpage() + "\n";
 			txt += "達成方法番号: " + this.get_this_tech_from_svpage() + "\n";
-			txt += "判定: " + tmp[1] + "\n";
-			txt += "判定コメント:\n" + this.safty_val(tmp[3]) + "\n";
-			txt += "対象ソース:\n" + this.safty_val(tmp[4]) + "\n";
-			txt += "修正ソース:\n" + this.safty_val(tmp[5]) + "";
+			txt += "判定: " + tmp[0] + "\n";
+			txt += "判定コメント:\n" + this.safty_val(tmp[2]) + "\n";
+			txt += "対象ソース:\n" + this.safty_val(tmp[3]) + "\n";
+			txt += "修正ソース:\n" + this.safty_val(tmp[4]) + "";
 			jAlert(this.str_escaping(txt));
 		};
 		this.safty_val = function(elm) {
