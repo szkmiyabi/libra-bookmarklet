@@ -4,9 +4,11 @@
  *
 ------------------------------------------------------*/
 javascript:(function(){
-	var type = "label_check";
-	var base = document;
-
+	var opt="paragraph";
+	var base=document;
+	var alt_flg=true;
+	var alt_chk=true;
+	var fname_flg=false;
 	var funcs = {
 		"paragraph" : function () {
 			var ps = base.getElementsByTagName("p");
@@ -73,23 +75,88 @@ javascript:(function(){
 			}
 		},
 		"link-img" : function () {
-			var alt_flg = false;
 			var a = document.getElementsByTagName("a");
 			for(var i=0; i<a.length; i++) {
 				var atag = a.item(i);
 				var img = atag.getElementsByTagName("img");
-				if(img.length > 0 && alt_flg) {
-					atag.setAttribute("style", "position:relative");
-					add_label(atag, i);
-				}
 				for(var j=0; j<img.length; j++) {
 					var imgtag = img.item(j);
 					imgtag.setAttribute("style", "border:2px dotted red;");
 					if(alt_flg) {
-						var span = document.getElementById("bkm-a-span-" + i);
-						span.innerHTML = imgtag.getAttribute("alt");
+						var html_str = "";
+						var alt_attr_tx = imgtag.getAttribute("alt");
+						var span = document.createElement("span");
+						var css_txt = "color:#fff;font-size:12px;padding:1px;background:#BF0000;";
+						span.setAttribute("style", css_txt);
+						span.id = "bkm-link-image-span-" + i;
+						if(alt_attr_check(imgtag)) {
+							html_str = "alt: " + alt_attr_tx;
+						} else {
+							html_str = "alt属性がない";
+						}
+						span.innerHTML = html_str;
+						imgtag.parentNode.insertBefore(span, imgtag.nextSibling);
 					}
 				}
+			}
+			function alt_attr_check(imgtag) {
+				var txt = imgtag.outerHTML;
+				var pt1 = new RegExp(/alt=".*"/);
+				var pt2 = new RegExp(/alt=/);
+				if(pt1.test(txt) && pt2.test(txt)) return true;
+				else return false;
+			}
+		},
+		"image" : function () {
+			var img = document.getElementsByTagName("img");
+			for(var i=0; i<img.length; i++) {
+				var imgtag = img.item(i);
+				imgtag.setAttribute("style", "border:1px solid red;");
+				var span = document.createElement("span");
+				span.id = "bkm-img-span-" + i;
+				var src_val = imgtag.getAttribute("src");
+				var fname = get_img_filename(src_val);
+				var alt_val = imgtag.getAttribute("alt");
+				var html_str = "";
+				if(alt_attr_check(imgtag)) {
+					html_str += "alt: " + alt_val;
+				} else {
+					html_str += "alt属性がない";
+				}
+				if(fname_flg) {
+					if(html_str !== "") {
+						html_str += ", filename: " + fname;
+					} else {
+						html_str += "filename: " + fname;
+					}
+				}
+				span.innerHTML = html_str;
+				var css_txt = "color:#fff;font-size:12px;padding:1px;background:#BF0000;";
+				span.setAttribute("style", css_txt);
+				imgtag.parentNode.insertBefore(span, imgtag.nextSibling);
+			}
+			function get_img_filename(str) {
+				var ret = "";
+				var pat = new RegExp(/(.+)\/(.+\.)(JPG|jpg|GIF|gif|PNG|png|BMP|bmp)$/);
+				if(pat.test(str)) {
+					var arr = str.match(pat);
+					ret += arr[2] + arr[3];
+				}
+				return ret;
+			}
+			function alt_attr_check(imgtag) {
+				var txt = imgtag.outerHTML;
+				var pt1 = new RegExp(/alt=".*"/);
+				var pt2 = new RegExp(/alt=/);
+				if(pt1.test(txt) && pt2.test(txt)) return true;
+				else return false;
+			}
+		},
+		"br": function() {
+			var brs = base.getElementsByTagName("br");
+			for(var i=0; i<brs.length; i++) {
+				var br = brs.item(i);
+				br.setAttribute("style", "border:2px dotted red; position: relative;");
 			}
 		},
 		"heading" : function () {
@@ -173,104 +240,6 @@ javascript:(function(){
 			];
 			for(var i=0; i<in_funcs.length; i++) {
 				in_funcs[i]();
-			}
-		},
-		"img-fname" : function () {
-			var alt_flg = false;
-			var fname_flg = true;
-			var img = document.getElementsByTagName("img");
-			for(var i=0; i<img.length; i++) {
-				var imgtag = img.item(i);
-				imgtag.setAttribute("style", "border:1px solid red;");
-				var rect = imgtag.getBoundingClientRect();
-				var top_rect = rect.top + window.pageYOffset;
-				var left_rect = rect.left + window.pageXOffset;
-				var span = document.createElement("span");
-				span.id = "bkm-img-span-" + i;
-				var src_val = imgtag.getAttribute("src");
-				var fname = get_img_filename(src_val);
-				var alt_val = imgtag.getAttribute("alt");
-				var html_str = "";
-				if(alt_flg) {
-					html_str += "alt: " + alt_val;
-				}
-				if(fname_flg) {
-					if(html_str !== "") {
-						html_str += ", filename: " + fname;
-					} else {
-						html_str += "filename: " + fname;
-					}
-				}
-				span.innerHTML = html_str;
-				var css_txt = "position:absolute;";
-				css_txt += "top:" + top_rect + "px;" + "left:" + left_rect + "px;";
-				css_txt += "color:#000;font-size:90%;opacity:0.8;border:1px solid red;padding:1px;background:yellow;";
-				span.setAttribute("style", css_txt);
-				imgtag.parentNode.insertBefore(span, img.nextSibling);
-			}
-			function get_img_filename(str) {
-				var ret = "";
-				var pat = new RegExp(/(.+)\/(.+\.)(JPG|jpg|GIF|gif|PNG|png|BMP|bmp)$/);
-				if(pat.test(str)) {
-					var arr = str.match(pat);
-					ret += arr[2] + arr[3];
-				}
-				return ret;
-			}
-		},
-		"lang-check": function () {
-			var body = document.getElementsByTagName("body").item(0);
-			var datas = [];
-			child_nodes(body);
-			for(var i=0; i<datas.length; i++) {
-				var elm = datas[i];
-				if(is_parent_elm(elm)) continue;
-				var text = in_clean_text(elm.innerHTML);
-				if(inc_alpha(text)) {
-					if(!is_tagcode(text)) {
-						elm.setAttribute("style", "color:red; border:2px dotted red; background-color: yellow;");
-					}
-				}
-			}
-			function child_nodes(obj) {
-				for(var i=0; i<obj.children.length; i++) {
-					var ch = obj.children[i];
-					datas.push(ch);
-					if(ch.hasChildNodes()) {
-						child_nodes(ch);
-					}
-				}
-			}
-			function inc_alpha(str) {
-				var pat = new RegExp(/[a-zA-Zａ-ｚＡ-Ｚ]+/mg);
-				if(pat.test(str)) return true;
-				else return false;
-			}
-			function is_tagcode(str) {
-				var pat = new RegExp(/<.+?>/);
-				if(pat.test(str)) return true;
-				else return false;
-			}
-			function is_parent_elm(obj) {
-				var out_list = ["ul", "ol", "dl", "table", "tbody", "tr"];
-				var tn = obj.tagName.toLowerCase();
-				for(var i=0; i<out_list.length; i++) {
-					if(out_list[i] === tn) return true;
-				}
-				return false;
-			}
-			function in_clean_text(str) {
-				var pat = new RegExp(/(<br.*?>|<img.*?>|<\/*a.*?>|<\/*p.*?>|<\/*strong.*?>|<\/*span.*?>|<\/*em.*?>|<\/*b.*?>|<\/*u.*?>|<\/*i.*?>|<\/*font.*?>|&nbsp;|&gt;|&lt;|&amp;)/mg);
-				return str.replace(pat, "");
-			}
-			/* ---debug--- */
-			function var_dump(arr) {
-				var cl = "";
-				for(var i=0; i<arr.length; i++) {
-					var row = arr[i];
-					cl += row + "\n";
-				}
-				console.log(cl);
 			}
 		},
 		label_check: function() {
@@ -373,35 +342,6 @@ javascript:(function(){
 		obj.appendChild(span);
 	}
 
-	switch(type) {
-		case "paragraph":
-			funcs["paragraph"]();
-			break;
-		case "list":
-			funcs["list"]();
-			break;
-		case "semantic":
-			funcs["semantic"]();
-			break;
-		case "link-img":
-			funcs["link-img"]();
-			break;
-		case "heading":
-			funcs["heading"]();
-			break;
-		case "table":
-			funcs["table"]();
-			break;
-		case "img-fname":
-			funcs["img-fname"]();
-			break;
-		case "lang-check":
-			funcs["lang-check"]();
-			break;
-		case "label_check":
-			funcs["label_check"]();
-			break;
-		default:
-			break;
-	}
+	eval('funcs["' + opt + '"]();');
+
 })();
