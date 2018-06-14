@@ -6,6 +6,8 @@ javascript:(function(){
 		this.url = location.href;
 		this.lks = document.getElementsByTagName("link");
 		this.sa = window.getSelection().toString();
+		this.lb_url = "http://jis.infocreate.co.jp";
+		this.anasv_url = "https://stg.test.aswbe-d.ana.co.jp";
 	}
 	cssUtil.prototype = {
 		get_root: function() {
@@ -50,11 +52,20 @@ javascript:(function(){
 			if(new RegExp(/(rel=")(stylesheet|alternate)(")/).test(str)) return true;
 			else return false;
 		},
+		is_libra_dm: function(str) {
+			var pat = new RegExp("^" + this.lb_url + ".*");
+			if(pat.test(str)) return true;
+			else return false;
+		},
 		path_encode: function(str) {
 			if(new RegExp(/^http/).test(str)) {
 				return str;
 			} else {
-				return this.get_root() + str;
+				if(this.is_libra_dm(this.url)) {
+					return this.anasv_url + str;
+				} else {
+					return this.get_root() + str;
+				}
 			}
 		},
 		near_path_encode: function(str) {
