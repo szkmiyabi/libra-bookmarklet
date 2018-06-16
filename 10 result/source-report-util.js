@@ -5,6 +5,7 @@
  * ページ番号 -> 検査画面別タブリンク化
  * 検査結果◎○△×未 -> 詳細別タブリンク化
  * 達成基準番号 -> 色付けトグルリンク化,参照済み色づけ
+ * 詳細ページ -> 検査画面別タブで開く
  *
 --------------------------------------------------*/
 javascript:(function(){
@@ -12,6 +13,8 @@ javascript:(function(){
 		this.htbl = document.getElementsByTagName("table").item(1);
 		this.tbl = document.getElementsByTagName("table").item(2);
 		this.lbui_url = "http://jis.infocreate.co.jp/diagnose/indexv2/index/projID/";
+		this.url = window.location.href;
+		this.rep_detail_pt = new RegExp(/\/diagnose\/indexv2\/report2\/projID\/[0-9]+\/controlID\/[a-zA-Z0-9]+\/guideline\/[0-9\.]+/);
 	}
 	resultTblUtil.prototype = {
 		get_proj_code: function() {
@@ -107,6 +110,22 @@ javascript:(function(){
 				cls.innerHTML = clstxt;
 			}
 		},
+		is_detail_pg: function() {
+			if(this.rep_detail_pt.test(this.url)) return true;
+			else return false;
+		},
+		get_page_num_detail_pg: function() {
+			var obj = this.htbl.rows.item(1).cells.item(1);
+			var tt = obj.innerHTML;
+			var pt = new RegExp(/(\[)([a-zA-Z0-9]+)(\])(.+)/);
+			if(pt.test(tt)) {
+				return tt.match(pt)[2];
+			}
+		},
+		browse_ui: function() {
+			window.open(this.get_ui_link(this.get_page_num_detail_pg()), "_blank");
+		},
+		/* ## inner js code ##
 		add_mark: function(num) {
 			var trs = this.tbl.rows;
 			for(var i=0; i<trs.length; i++) {
@@ -132,13 +151,35 @@ javascript:(function(){
 			var me = e.target || e.srcElement;
 			me.setAttribute("style", "background: red");
 		}
+		## /inner js code ## */
+	};
+
+	function indexUtil(ui) { this.ui = ui; }
+	indexUtil.prototype = {
+		exec: function() {
+			this.ui.add_target_b();
+			this.ui.add_ui_link();
+			this.ui.add_js();
+			this.ui.add_handle();	
+		}
+	};
+	function detailUtil(ui) { this.ui = ui; }
+	detailUtil.prototype = {
+		exec: function() {
+			this.ui.browse_ui();
+		}
 	};
 
 
 	var ui = new resultTblUtil();
-	ui.add_target_b();
-	ui.add_ui_link();
-	ui.add_js();
-	ui.add_handle();
+	var exe = null;
+
+	if(ui.is_detail_pg()) {
+		exe = new detailUtil(ui);
+	} else {
+		exe = new indexUtil(ui);
+	}
+
+	if(exe !== null) exe.exec();
 
 })();
