@@ -6,6 +6,7 @@
 ------------------------------------------------------*/
 javascript:(function(){
 	var target="description";
+	var pattern = "(.*\n*)(「トップページ」「お問い合わせ」\n)";
 	function surveyDialogUtil() {
 		form = document.forms["diag_form"];
 		comment = document.getElementById("comments");
@@ -193,14 +194,14 @@ javascript:(function(){
 	/* 具体処理をprototypeで定義 */
 	extendsClass.prototype = {
 		/* メソッドを定義、1個だけなのでexecと命名 */
-		exec: function() {
-			var pattern = "ヘッダーのリンク：\n「トップページ」「お問い合わせ」\n";
+		exec: function(pattern) {
+			
 			this.util.regx_ui_text_replace(target, pattern, "");
 		}
 	};
 	/* オブジェクトをインスタンス化して実行 */
 	var app = new extendsClass();
-	app.exec();
+	app.exec(pattern);
 	/* ---- サンプルコードここまで ---- */
 
 })();
