@@ -390,7 +390,7 @@ javascript:(function(){
 		this.is_firefox = function() {
 			var ret = "";
 			var userAgent = window.navigator.userAgent.toLowerCase();
-			var pt = new RegExp(/(gecko|firefox)/);
+			var pt = new RegExp(/(firefox)/);
 			if(pt.test(userAgent)) return true;
 			else return false;
 		};
