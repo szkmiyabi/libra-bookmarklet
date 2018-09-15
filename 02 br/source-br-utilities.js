@@ -212,7 +212,7 @@ javascript:(function(){
 		this.pt3 = new RegExp(/(http.*:\/\/.+)/);
 		this.pt4 = new RegExp(/(IFC1019|IFC1020|IFC1021)/);
 		this.pt5 = new RegExp(/(@import url)(\("*)(.+?)("*\);)/);
-		this.pt6 = new RegExp(/.+\t.+\t.+/);
+		this.pt6 = new RegExp(/.+ *\t.+ *\t.+/);
 		this.pt7 = new RegExp(/(\[)(.+?)(\])/);
 
 		this.get_this_url = function() {
