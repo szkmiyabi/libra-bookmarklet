@@ -23,6 +23,10 @@ javascript:(function(){
 			"FAIL2": "4",
 			"NA_HC": "5"
 		};
+		cpflags = {
+			"yes": "1",
+			"no" : "0"
+		};
 	}
 	allDiagClass.prototype = {
 		init_datas: function() {
@@ -96,6 +100,31 @@ javascript:(function(){
 			}
 			return secondary_key;
 
+		},
+		set_survey_cp: function(obj, flag) {
+			var key = cpflags[flag];
+			var inps = obj.getElementsByTagName("input");
+			for(var i=0; i<inps.length; i++) {
+				var inp = inps.item(i);
+				if(inp.value === key) {
+					inp.click();
+				}
+			}
+		},
+		get_survey_cp: function(obj) {
+			var ret = "";
+			var inps = obj.getElementsByTagName("input");
+			for(var i=0; i<inps.length; i++) {
+				var inp = inps.item(i);
+				if(inp.checked === true) {
+					var key_vl = inp.value;
+					for(var k in cpflags) {
+						if(key_vl === cpflags[k]) {
+							return k;
+						}
+					}
+				}
+			}
 		},
 		is_text_empty: function(obj) {
 			var ta = obj.getElementsByTagName("textarea").item(0);
