@@ -350,7 +350,11 @@ javascript:(function(){
 			txt += "判定コメント:\n" + this.safty_val(tmp[3]) + "\n";
 			txt += "対象ソース:\n" + this.safty_val(tmp[4]) + "\n";
 			txt += "修正ソース:\n" + this.safty_val(tmp[5]) + "";
-			jAlert(this.str_escaping(txt));
+			if(this.is_firefox()) {
+				alert(txt);
+			} else {
+				jAlert(this.str_escaping(txt));
+			}
 		};
 		this.browse_pasteboard_from_svpage = function() {
 			var txt = "";
@@ -367,7 +371,11 @@ javascript:(function(){
 			txt += "判定コメント:\n" + this.safty_val(tmp[2]) + "\n";
 			txt += "対象ソース:\n" + this.safty_val(tmp[3]) + "\n";
 			txt += "修正ソース:\n" + this.safty_val(tmp[4]) + "";
-			jAlert(this.str_escaping(txt));
+			if(this.is_firefox()) {
+				alert(txt);
+			} else {
+				jAlert(this.str_escaping(txt));
+			}
 		};
 		this.safty_val = function(elm) {
 			if(typeof elm == "undefined") return "";
@@ -378,6 +386,13 @@ javascript:(function(){
 		};
 		this.original_encodeURI = function(str) {
 			return str.replace(/&/g, "%26").replace(/\?/g, "%3F");
+		};
+		this.is_firefox = function() {
+			var ret = "";
+			var userAgent = window.navigator.userAgent.toLowerCase();
+			var pt = new RegExp(/(gecko|firefox)/);
+			if(pt.test(userAgent)) return true;
+			else return false;
 		};
 
 	}
