@@ -202,7 +202,6 @@ javascript:(function(){
 	};
 
 	function repoUtilClass() {
-
 		this.sv_util = new surveyDialogUtil();
 
 		this.tbl = document.getElementsByTagName("table").item(1);
@@ -214,8 +213,10 @@ javascript:(function(){
 		this.pt5 = new RegExp(/(@import url)(\("*)(.+?)("*\);)/);
 		this.pt6 = new RegExp(/.+ *\t.+ *\t.+/);
 		this.pt7 = new RegExp(/(\[)(.+?)(\])/);
+	}
+	repoUtilClass.prototype = {
 
-		this.get_this_url = function() {
+		get_this_url: function() {
 			if(this.sv_util.is_detail_page()) {
 				var rows = this.tbl.rows;
 				var rowdata = rows.item(1);
@@ -227,11 +228,11 @@ javascript:(function(){
 			} else if(this.sv_util.is_survey_page()) {
 				return this.sv_util.get_survey_url();
 			}
-		};
-		this.get_this_url_from_svpage = function() {
+		},
+		get_this_url_from_svpage: function() {
 			return this.sv_util.get_survey_url();
-		};
-		this.get_this_page_num = function() {
+		},
+		get_this_page_num: function() {
 				var rows = this.tbl.rows;
 				var rowdata = rows.item(1);
 				if(typeof rowdata != "undefined") {
@@ -239,60 +240,60 @@ javascript:(function(){
 					if(this.pt7.test(src)) return src.match(this.pt7)[2];
 				}
 				else return null;	
-		};
-		this.get_this_page_num_from_svpage = function() {
+		},
+		get_this_page_num_from_svpage: function() {
 			return this.sv_util.get_num();
-		};
-		this.get_this_guideline = function() {
+		},
+		get_this_guideline: function() {
 				var rows = this.tbl.rows;
 				var rowdata = rows.item(2);
 				if(typeof rowdata != "undefined") return rowdata.cells.item(1).innerText;
 				else return null;
-		};
-		this.get_this_guideline_from_svpage = function() {
+		},
+		get_this_guideline_from_svpage: function() {
 			return this.sv_util.get_guideline();
-		};
-		this.get_this_tech_from_svpage = function() {
+		},
+		get_this_tech_from_svpage: function() {
 			return this.sv_util.get_tech();
-		};
-		this.get_this_home_url = function(url) {
+		},
+		get_this_home_url: function(url) {
 			var mt = url.match(this.pt1);
 			if(mt!==null) return mt[1];
 			else return null;
-		};
-		this.is_text_select = function() {
+		},
+		is_text_select: function() {
 			if(window.getSelection().toString() !== "") return true;
 			else return false;
-		};
-		this.is_valid_select = function(str) {
+		},
+		is_valid_select: function(str) {
 			var tt = this.get_select_text();
 			if(this.pt0.test(tt)) return true;
 			else return false;
-		};
-		this.is_validate_tech_selected = function() {
+		},
+		is_validate_tech_selected: function() {
 			var tt = this.get_select_text();
 			if(this.pt4.test(tt) && !this.pt6.test(tt)) return true;
 			else return false;
-		};
-		this.is_other_css_selected = function() {
+		},
+		is_other_css_selected: function() {
 			var tt = this.get_select_text();
 			if(this.pt5.test(tt)) return true;
 			else return false;
-		};
-		this.is_table_row_selected = function() {
+		},
+		is_table_row_selected: function() {
 			var tt = this.get_select_text();
 			if(this.pt6.test(tt)) return true;
 			else return false;
-		};
-		this.get_select_text = function() {
+		},
+		get_select_text: function() {
 			return window.getSelection().toString();
-		};
-		this.get_srcattr_text = function(str) {
+		},
+		get_srcattr_text: function(str) {
 			var mt = str.match(this.pt2);
 			if(mt!==null) return mt[2];
 			else return null;
-		};
-		this.browse_image = function() {
+		},
+		browse_image: function() {
 			if(!this.is_valid_select()) {
 				alert("選択範囲が正しくありません");
 				return;
@@ -301,8 +302,8 @@ javascript:(function(){
 			var subdir = this.get_srcattr_text(this.get_select_text());
 			var finalurl = baseurl + subdir;
 			window.open(finalurl, "_blank");
-		};
-		this.browse_page = function() {
+		},
+		browse_page: function() {
 			var url = this.get_this_url();
 			if(url != null) {
 				url = this.original_amp_decode(url);
@@ -310,11 +311,11 @@ javascript:(function(){
 			}else{
 				alert("エラーです。");
 			}
-		};
-		this.original_amp_decode = function(str) {
+		},
+		original_amp_decode: function(str) {
 			return str.replace(/(&amp;|%26)/, "&");
-		};
-		this.validate_page = function() {
+		},
+		validate_page: function() {
 			var url = this.get_this_url();
 			if(this.pt3.test(url)) {
 				var burl = url.match(this.pt3)[1];
@@ -323,8 +324,8 @@ javascript:(function(){
 			}else{
 				alert("エラーです。");
 			}
-		};
-		this.import_other_css = function() {
+		},
+		import_other_css: function() {
 			var tt = this.get_select_text();
 			var nurl = location.href;
 			var burl_home = this.pt1.test(nurl) ? nurl.match(this.pt1)[1] : "";
@@ -334,8 +335,8 @@ javascript:(function(){
 			}else{
 				alert("エラーです。");
 			}
-		};
-		this.browse_pasteboard = function() {
+		},
+		browse_pasteboard: function() {
 			var txt = "";
 			var tt = this.get_select_text();
 			tt=tt.replace(/^ +/m,"");
@@ -355,8 +356,8 @@ javascript:(function(){
 			} else {
 				jAlert(this.str_escaping(txt));
 			}
-		};
-		this.browse_pasteboard_from_svpage = function() {
+		},
+		browse_pasteboard_from_svpage: function() {
 			var txt = "";
 			var tt = this.get_select_text();
 			tt=tt.replace(/^ +/m,"");
@@ -376,26 +377,25 @@ javascript:(function(){
 			} else {
 				jAlert(this.str_escaping(txt));
 			}
-		};
-		this.safty_val = function(elm) {
+		},
+		safty_val: function(elm) {
 			if(typeof elm == "undefined") return "";
 			else return elm;
-		};
-		this.str_escaping = function(str) {
+		},
+		str_escaping: function(str) {
 			return str.replace(/</mg, "&lt;").replace(/>/mg, "&gt;").replace(/\n/mg, "<br>");
-		};
-		this.original_encodeURI = function(str) {
+		},
+		original_encodeURI: function(str) {
 			return str.replace(/&/g, "%26").replace(/\?/g, "%3F");
-		};
-		this.is_firefox = function() {
+		},
+		is_firefox: function() {
 			var ret = "";
 			var userAgent = window.navigator.userAgent.toLowerCase();
 			var pt = new RegExp(/(firefox)/);
 			if(pt.test(userAgent)) return true;
 			else return false;
-		};
-
-	}
+		},
+	};
 
 	var util = new repoUtilClass();
 	if(util.is_text_select()) {
