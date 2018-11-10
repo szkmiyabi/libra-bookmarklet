@@ -338,45 +338,88 @@ javascript:(function(){
 		},
 		browse_pasteboard: function() {
 			var txt = "";
-			var tt = this.get_select_text();
-			tt=tt.replace(/^ +/m,"");
-		    tt=tt.replace(/^\t+/m,"");
-			var tmp = tt.split("\t");
-			if(tmp.length == 0) return false;
+			var arr = new Array();
+			var mlarr = null;
+			var selected_text = this.get_select_text();
+			var mlpat = new RegExp(/\n/mg);
+
 			txt += this.get_this_page_num() + "\n";
 			txt += this.get_this_url() + "\n";
 			txt += "達成基準: " + this.get_this_guideline() + "\n";
-			txt += "達成方法番号: " + tmp[0] + "\n";
-			txt += "判定: " + tmp[1] + "\n";
-			txt += "判定コメント:\n" + this.safty_val(tmp[3]) + "\n";
-			txt += "対象ソース:\n" + this.safty_val(tmp[4]) + "\n";
-			txt += "修正ソース:\n" + this.safty_val(tmp[5]) + "";
-			if(this.is_firefox()) {
-				alert(txt);
+
+			if(mlpat.test(selected_text)) mlarr = selected_text.split(/\n/);
+			if(mlarr != null) {
+				for(var i=0; i<mlarr.length; i++) {
+					var line = mlarr[i];
+					var colarr = line.split(/\t/);
+					if(colarr != null) {
+						txt += "達成方法番号: " + colarr[1] + "\n";
+						txt += "判定: " + colarr[2] + "\n";
+						txt += "判定コメント:\n" + this.safty_val(colarr[4]) + "\n";
+						txt += "対象ソース:\n" + this.safty_val(colarr[5]) + "\n";
+						txt += "修正ソース:\n" + this.safty_val(colarr[6]) + "\n";
+					}
+				}
 			} else {
-				jAlert(this.str_escaping(txt));
+				var colarr = selected_text.split(/\t/);
+				if(colarr != null) {
+					txt += "達成方法番号: " + colarr[1] + "\n";
+					txt += "判定: " + colarr[2] + "\n";
+					txt += "判定コメント:\n" + this.safty_val(colarr[4]) + "\n";
+					txt += "対象ソース:\n" + this.safty_val(colarr[5]) + "\n";
+					txt += "修正ソース:\n" + this.safty_val(colarr[6]) + "\n";
+				}
 			}
+			this.myAlert("br-util-sv-report", txt);
 		},
 		browse_pasteboard_from_svpage: function() {
 			var txt = "";
-			var tt = this.get_select_text();
-			tt=tt.replace(/^ +/m,"");
-		    tt=tt.replace(/^\t+/m,"");
-			var tmp = tt.split("\t");
-			if(tmp.length == 0) return false;
+			var arr = new Array();
+			var mlarr = null;
+			var selected_text = this.get_select_text();
+			var mlpat = new RegExp(/\n/mg);
+
 			txt += this.get_this_page_num_from_svpage() + "\n";
 			txt += this.get_this_url_from_svpage() + "\n";
 			txt += "達成基準: " + this.get_this_guideline_from_svpage() + "\n";
-			txt += "達成方法番号: " + this.get_this_tech_from_svpage() + "\n";
-			txt += "判定: " + tmp[0] + "\n";
-			txt += "判定コメント:\n" + this.safty_val(tmp[2]) + "\n";
-			txt += "対象ソース:\n" + this.safty_val(tmp[3]) + "\n";
-			txt += "修正ソース:\n" + this.safty_val(tmp[4]) + "";
-			if(this.is_firefox()) {
-				alert(txt);
+
+			if(mlpat.test(selected_text)) mlarr = selected_text.split(/\n/);
+			if(mlarr != null) {
+				for(var i=0; i<mlarr.length; i++) {
+					var line = mlarr[i];
+					var colarr = line.split(/\t/);
+					if(colarr != null) {
+						txt += "達成方法番号: " + this.get_this_tech_from_svpage() + "\n";
+						txt += "判定: " + colarr[2] + "\n";
+						txt += "判定コメント:\n" + this.safty_val(colarr[4]) + "\n";
+						txt += "対象ソース:\n" + this.safty_val(colarr[5]) + "\n";
+						txt += "修正ソース:\n" + this.safty_val(colarr[6]) + "\n";
+					}
+				}
 			} else {
-				jAlert(this.str_escaping(txt));
+				var colarr = selected_text.split(/\t/);
+				if(colarr != null) {
+					txt += "達成方法番号: " + this.get_this_tech_from_svpage() + "\n";
+					txt += "判定: " + colarr[2] + "\n";
+					txt += "判定コメント:\n" + this.safty_val(colarr[4]) + "\n";
+					txt += "対象ソース:\n" + this.safty_val(colarr[5]) + "\n";
+					txt += "修正ソース:\n" + this.safty_val(colarr[6]) + "\n";
+				}
 			}
+			this.myAlert("br-util-sv-report", txt);
+		},
+		myAlert: function(dialogID, txt) {
+			var y = window.pageYOffset;
+			var divcss = 'font-family:\'メイリオ\',Meiryo,sans-serif;font-size:90%;padding:5px;position:absolute;top:' + y + 'px;left:0;background:#fff;border:solid #ccc 1px;z-index:2999;width:760px;height:390px;';
+			var tacss = ' style=\'width:750px; height: 355px;\'';
+			var btnfunc = 'this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);';
+			var panel_start = '<div style=\'padding:3px;background:#eee;height:19px;\'><span style=\'float:left;\'><strong>診断箇所一覧</strong></span><a style=\'float:right;\' onclick=\"' + btnfunc + '\">閉じる' + '</a></div><textarea' + tacss + '>';
+			var panel_end = '</textarea>';
+			var elm = document.createElement("div");
+			elm.id = dialogID;
+			elm.style.cssText = divcss;
+			elm.innerHTML = panel_start + txt + panel_end;
+			document.getElementsByTagName("body")[0].appendChild(elm);			
 		},
 		safty_val: function(elm) {
 			if(typeof elm == "undefined") return "";
