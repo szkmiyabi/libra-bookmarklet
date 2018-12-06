@@ -81,7 +81,7 @@ javascript:(function(){
 			scrtxt += 'var cls = tr.cells.item(j);';
 			scrtxt += 'if(j == num) {';
 			scrtxt += 'if(cls.getAttribute("style") === null) {';
-			scrtxt += 'cls.setAttribute("style", "background: yellow");';
+			scrtxt += 'cls.setAttribute("style", "background:yellow");';
 			scrtxt += 'cls.getElementsByTagName("a").item(0).setAttribute("onclick", "change_color()");';
 			scrtxt += '} else {';
 			scrtxt += 'cls.removeAttribute("style");';
@@ -95,7 +95,26 @@ javascript:(function(){
 			scrtxt += 'function change_color() {';
 			scrtxt += 'var e = (window.event) ? window.event : arguments.callee.caller.arguments[0];';
 			scrtxt += 'var me = e.target || e.srcElement;';
-			scrtxt += 'me.parentNode.setAttribute("style", "background: #FF0080");';
+			scrtxt += 'me.parentNode.setAttribute("style", "background: #ff4fa7");';
+			scrtxt += '}';
+			scrtxt += 'function change_line_color() {';
+			scrtxt += 'var e = (window.event) ? window.event : arguments.callee.caller.arguments[0];';
+			scrtxt += 'var me = e.target || e.srcElement;';
+			scrtxt += 'var tr = me.parentNode.parentNode;';
+			scrtxt += 'var tds = tr.getElementsByTagName("td");';
+			scrtxt += 'for(var i=0; i<tds.length; i++) {';
+			scrtxt += 'var cell = tds.item(i);';
+			scrtxt += 'if(cell.getAttribute("style") === "white-space:nowrap") cell.removeAttribute("style");';
+			scrtxt += 'if(cell.getAttribute("style") === null){';
+			scrtxt += 'var csstxt = "";';
+			scrtxt += 'if(i==0) csstxt = "background: #ff4fa7;white-space:nowrap;";';
+			scrtxt += 'else csstxt = "background: #ff4fa7;";';
+			scrtxt += 'cell.setAttribute("style", csstxt);';
+			scrtxt += '} else if(cell.getAttribute("style") === "background:yellow") {';
+			scrtxt += '} else {';
+			scrtxt += 'cell.removeAttribute("style");';
+			scrtxt += '}';
+			scrtxt += '}';
 			scrtxt += '}';
 			scr.textContent = scrtxt;
 			document.getElementsByTagName("body").item(0).appendChild(scr);
@@ -108,6 +127,18 @@ javascript:(function(){
 				var clstxt = cls.innerHTML;
 				clstxt = '<a href="javascript:void(0)" onclick="add_mark(' + (j + 2) + ');return false;" style="text-decoration:none">' + clstxt + "</a>";
 				cls.innerHTML = clstxt;
+			}
+		},
+		add_line_handle: function() {
+			var trs = this.tbl.rows;
+			for(var i=0; i<trs.length; i++) {
+				if(i < 2) continue;
+				var tr = trs.item(i);
+				var td = tr.cells.item(0);
+				td.setAttribute("style", "white-space:nowrap");
+				var inhtml = td.innerHTML;
+				var new_inhtml = '<input type="checkbox" onclick="change_line_color()">' + inhtml;
+				td.innerHTML = new_inhtml;
 			}
 		},
 		is_detail_pg: function() {
@@ -125,33 +156,6 @@ javascript:(function(){
 		browse_ui: function() {
 			window.open(this.get_ui_link(this.get_page_num_detail_pg()), "_blank");
 		},
-		/* ## inner js code ##
-		add_mark: function(num) {
-			var trs = this.tbl.rows;
-			for(var i=0; i<trs.length; i++) {
-				if(i < 2) continue;
-				var tr = trs.item(i);
-				for(var j=0; j<tr.cells.length; j++) {
-					if(j < 2) continue;
-					var cls = tr.cells.item(j);
-					if(j == num) {
-						console.log(cls.getAttribute("style"));
-						if(cls.getAttribute("style") === null) {
-							cls.setAttribute("style", "background: yellow");
-						} else {
-							cls.removeAttribute("style");
-						}
-						break;
-					}
-				}
-			}
-		},
-		change_color: function() {
-			var e = (window.event) ? window.event : arguments.callee.caller.arguments[0];
-			var me = e.target || e.srcElement;
-			me.setAttribute("style", "background: red");
-		}
-		## /inner js code ## */
 	};
 
 	function indexUtil(ui) { this.ui = ui; }
@@ -160,7 +164,8 @@ javascript:(function(){
 			this.ui.add_target_b();
 			this.ui.add_ui_link();
 			this.ui.add_js();
-			this.ui.add_handle();	
+			this.ui.add_handle();
+			this.ui.add_line_handle();
 		}
 	};
 	function detailUtil(ui) { this.ui = ui; }
