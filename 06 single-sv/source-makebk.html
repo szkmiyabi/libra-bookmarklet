@@ -127,7 +127,7 @@ function bkm_create(){
   } else if(bkm_srccode_status_val=="2") {
     var patval = document.getElementById("regx_text").value;
     var repval = document.getElementById("regx_after_text").value;
-    bkm_body += 'var pat=new RegExp(/' + patval + '/);';
+    bkm_body += 'var pat=new RegExp(' + patval + ');';
     bkm_body += 'var regx_before_text=document.getElementById("srccode").value;';
     bkm_body += 'var regx_after_text=regx_before_text.replace(pat, \'' + repval + '\');';
     bkm_body += 'document.getElementById("srccode").value=regx_after_text;'
