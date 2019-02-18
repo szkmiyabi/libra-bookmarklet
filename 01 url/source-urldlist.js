@@ -4,6 +4,15 @@
  *
 ------------------------------------------------------*/
 javascript:(function(){
+	let msg_data = [
+		"URL一覧データタイプの指定\npageIDとURL=no-and-url、pageIDのみ=no-only",
+		"no-and-url no-only"
+	];
+	let type=prompt(msg_data[0], msg_data[1]);
+	if(!new RegExp(/(^no\-only$|^no\-and\-url$)/).test(type)) {
+		alert(type + ": 不正なオペレーション！");
+		return;
+	}
 	function directUrlUtil() {
 		this.urlarr = new Array();
 		var tmpobj = document.getElementById("urlList").getElementsByTagName("option");
@@ -21,13 +30,17 @@ javascript:(function(){
 		get_url: function(str) {
 			return str.replace(this.pagept, "");
 		},
-		exec: function() {
+		exec: function(type) {
 			var str = "";
 			for(var i=0; i<this.urlarr.length; i++) {
 				var row = this.urlarr[i];
 				var pageid = this.get_pageID(row);
 				var url = this.get_url(row);
-				str += pageid + "\t" + url + "\n";
+				if(type === "no-and-url") {
+					str += pageid + "\t" + url + "\n";
+				} else if(type === "no-only") {
+					str += pageid + "\n";
+				}
 			}
 			this.myAlert("directUrlListDialog", str);
 		},
@@ -42,9 +55,9 @@ javascript:(function(){
 			elm.id = dialogID;
 			elm.style.cssText = divcss;
 			elm.innerHTML = panel_start + txt + panel_end;
-			document.getElementsByTagName("body")[0].appendChild(elm);			
+			document.getElementsByTagName("body")[0].appendChild(elm);
 		},
 	};
-	app = new directUrlUtil();
-	app.exec();
+	let app = new directUrlUtil();
+	app.exec(type);
 })();
