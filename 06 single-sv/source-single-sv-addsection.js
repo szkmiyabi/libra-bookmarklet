@@ -191,7 +191,7 @@ javascript:(function(){
 		}
 
 		dispatch(str) {
-			return this.seq[0] + ".\r\n" + str + "\r\n" + this.seq[1] + "\r\n";
+			return this.seq[0] + ".\r\n" + str + "\r\n" + this.seq[1] + ".\r\n";
 		}
 
 		exec() {
