@@ -5,6 +5,7 @@
  *
 ------------------------------------------------------*/
 javascript:(function(){
+	/* 基本クラス */
 	class singleSurvey {
 		constructor() {
 			this.form = document.forms["diag_form"];
@@ -65,18 +66,6 @@ javascript:(function(){
 			return this.srccode.value;
 		}
 
-		get_survey(flag) {
-			for(var i=0; i<this.form.elements.length; i++) {
-				var ip = this.form.elements[i];
-				var val = ip.value;
-				if(val===flag) {
-					this.diag_clean(flag);
-					ip.click();
-					break;
-				}
-			}
-		}
-
 		set_comment(str) {
 			this.comment.value = str;
 		}
@@ -90,10 +79,18 @@ javascript:(function(){
 		}
 
 		set_survey(flag) {
+			var flag_val = "";
+			for(var key in this.hash) {
+				var key_vl = this.hash[key];
+				if(flag === key_vl) {
+					flag_val = key;
+					break;
+				}
+			}
 			for(var i=0; i<this.form.elements.length; i++) {
 				var ip = this.form.elements[i];
 				var val = ip.value;
-				if(val===flag) {
+				if(val===flag_val) {
 					this.diag_clean(flag);
 					ip.click();
 					break;
