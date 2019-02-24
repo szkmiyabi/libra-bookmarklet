@@ -4,64 +4,87 @@
  *
 ------------------------------------------------------*/
 javascript:(function(){
-	function allDiagClass() {
-		heading = document.getElementsByTagName("table").item(0);
-		tbl = document.getElementsByTagName("table").item(2);
-		flags = {
-			"UNCOMP": "CHECK",
-			"PASS": "PASS_HC",
-			"PASS2": "PASS2",
-			"FAIL": "FAIL_HC",
-			"FAIL2": "FAIL2",
-			"NA": "NA_HC"
-		};
-		nmflags = {
-			"CHECK": "0",
-			"PASS_HC": "1",
-			"PASS2": "2",
-			"FAIL_HC": "3",
-			"FAIL2": "4",
-			"NA_HC": "5"
-		};
-	}
-	allDiagClass.prototype = {
-		init_datas: function() {
-			return tbl.rows;
-		},
-		survey_obj: function(row_obj) {
+	/* 基本クラス */
+	class allSurveyByTable {
+		constructor() {
+			this.heading = document.getElementsByTagName("table").item(0);
+			this.tbl = document.getElementsByTagName("table").item(2);
+			this.hash = {
+				"UNCOMP": "未判定",
+				"PASS":"適合",
+				"PASS2":"適合(注記)",
+				"FAIL":"不適合",
+				"NA":"非適用"
+			};
+			this.flags = {
+				"UNCOMP": "CHECK",
+				"PASS": "PASS_HC",
+				"PASS2": "PASS2",
+				"FAIL": "FAIL_HC",
+				"NA": "NA_HC"
+			};
+			this.nmflags = {
+				"CHECK": "0",
+				"PASS_HC": "1",
+				"PASS2": "2",
+				"FAIL_HC": "3",
+				"NA_HC": "4"
+			};
+		}
+
+		init_datas() {
+			return this.tbl.rows;
+		}
+
+		survey_obj(row_obj) {
 			return row_obj.cells.item(2);
-		},
-		comment_obj: function(row_obj) {
+		}
+
+		comment_obj(row_obj) {
 			return row_obj.cells.item(3);
-		},
-		description_obj: function(row_obj) {
+		}
+
+		description_obj(row_obj) {
 			return row_obj.cells.item(4);
-		},
-		srccode_obj: function(row_obj) {
+		}
+
+		srccode_obj(row_obj) {
 			return row_obj.cells.item(5);
-		},
-		get_text: function(obj) {
+		}
+
+		get_text(obj) {
 			return obj.getElementsByTagName("textarea").item(0).value;
-		},
-		set_text: function(obj, str) {
+		}
+
+		set_text(obj, str) {
 			obj.getElementsByTagName("textarea").item(0).value = str;
-		},
-		clear_text: function(obj) {
+		}
+
+		clear_text(obj) {
 			obj.getElementsByTagName("textarea").item(0).value = "";
-		},
-		set_survey: function(obj, flag) {
+		}
+
+		set_survey(obj, flag) {
 			var ts = obj.getElementsByTagName("select").item(0);
+			var flag_key = "";
+			for(var key in this.hash) {
+				var vl = this.hash[key];
+				if(vl == flag) {
+					flag_key = key;
+					break;
+				}
+			}
 			var key_val = "";
-			for(var key in flags) {
-				if(key == flag) {
-					key_val = flags[key];
+			for(var key in this.flags) {
+				if(key == flag_key) {
+					key_val = this.flags[key];
 					break;
 				}
 			}
 			var key_nm = 0;
-			for(var key in nmflags) {
+			for(var key in this.nmflags) {
 				if(key == key_val) {
-					key_nm = Number(nmflags[key]);
+					key_nm = Number(this.nmflags[key]);
 					break;
 				}
 			}
@@ -74,35 +97,44 @@ javascript:(function(){
 					break;
 				}
 			}
-		},
-		get_survey: function(obj) {
+		}
+
+		get_survey(obj) {
 			var ts = obj.getElementsByTagName("select").item(0);
 			var idx = ts.selectedIndex + "";
 			var primary_key = "";
 			var secondary_key = "";
-			for(var key in nmflags) {
-				var val = nmflags[key] + "";
+			var hash_val = "";
+			for(var key in this.nmflags) {
+				var val = this.nmflags[key] + "";
 				if(idx === val) {
 					primary_key = key;
 					break;
 				}
 			}
-			for(var key in flags) {
-				var val = flags[key];
+			for(var key in this.flags) {
+				var val = this.flags[key];
 				if(primary_key === val) {
 					secondary_key = key;
 					break;
 				}
 			}
-			return secondary_key;
+			for(var key in this.hash) {
+				if(key == secondary_key) {
+					hash_val = this.hash[key];
+					break;
+				}
+			}
+			return hash_val;
+		}
 
-		},
-		is_text_empty: function(obj) {
+		is_text_empty(obj) {
 			var ta = obj.getElementsByTagName("textarea").item(0);
 			if(ta.value === "" || ta.value === null) return true;
 			else return false;
-		},
-		save: function () {
+		}
+
+		save() {
 			var d = document.getElementsByTagName("input");
 			for(var i=0; i < d.length; i++) {
 				var itag = d.item(i);
@@ -112,53 +144,55 @@ javascript:(function(){
 				break;
 				}
 			}
-		},
-		clean_text: function(str) {
+		}
+
+		clean_text(str) {
 			str = str.replace(/^ +/mg, "");
 			str = str.replace(/(\r\n|\n)/mg, "");
 			str = str.replace(/\t/mg, "");
 			return str;
-		},
-		get_tech_code: function() {
-			var rows = heading.rows;
+		}
+
+		get_tech_code() {
+			var rows = this.heading.rows;
 			var row = rows.item(0);
 			return row.cells.item(5).innerText;
 		}
-	};
 
-	/* ---- mainルーチンひな形 ---- */
-	var diag = new allDiagClass();
-	var arr = diag.init_datas();
+	}
+
+	/* 継承クラス */
+	class allSurveyByTableCostom extends allSurveyByTable {
+		constructor() {
+			super();
+		}
+
+		/* 判定対象判定 */
+		target_searcher(str) {
+			var pt1 = new RegExp(/^<label.+/mg);
+			var pt2 = new RegExp(/^<form.+/mg);
+			if(pt1.test(str) || pt2.test(str)) return true;
+			else return false;
+		}
+	}
+
+	let app = new allSurveyByTableCostom();
+	let arr = app.init_datas();
+
 	for(var i=0; i<arr.length; i++) {
 		if(i == 0) continue;
 		var row = arr.item(i);
-		var survey_obj = diag.survey_obj(row);
-		var comment_obj = diag.comment_obj(row);
-		var description_obj = diag.description_obj(row);
-		var srccode_obj = diag.srccode_obj(row);
+		var survey_obj = app.survey_obj(row);
+		var comment_obj = app.comment_obj(row);
+		var description_obj = app.description_obj(row);
+		var srccode_obj = app.srccode_obj(row);
 
-		/* ---- main処理 ---- */
-
-		/* ---- 以下はサンプルコードのため、実装時には撤去すること ---- */
-		/* 判定を取得 */
-		var survey = diag.get_survey(survey_obj);
-		/* 未判定の場合のみ、処理を実行 */
-		if(survey==="UNCOMP") {
-			/* 不適合を選択 */
-			diag.set_survey(survey_obj, "FAIL");
-			/* 判定コメントをセット */
-			diag.set_text(comment_obj, "別ウィンドウで開くことの明示無し");
-			/* 対象ソースを取得 */
-			var description = diag.get_text(description_obj);
-			/* <a>タグの正規表現パターンを定義 */
-			var pt = new RegExp(/(<a .+?>)(.+?)(<\/a>)/);
-			/* 正規表現置換で、<a>閉じタグの直前に、(別ウィンドウ)と追記する */
-			var newsrccode = description.replace(pt, "$1$2(別ウィンドウ）$3");
-			/* それを、修正ソースコードに、セット */
-			diag.set_text(srccode_obj, newsrccode);
+		var description = app.clean_text(app.get_text(description_obj));
+		if(app.target_searcher(description)) {
+			app.set_survey(survey_obj, "適合");
+		} else {
+			app.set_survey(survey_obj, "非適用");
 		}
-		/* ---- サンプルコードここまで ---- */
-
 	}
 
 })();
