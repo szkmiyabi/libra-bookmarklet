@@ -1,19 +1,23 @@
 /*-----------------------------------------------------
  *
  	達成方法番号を進む、戻す、TOPに戻す、BOTTOMに進む
+ 	class構文に置き換え済み
  *
 ------------------------------------------------------*/
 javascript:(function(){
 	var type="next-uncomp";
 
-	function techDropdownUtil(){
-		this.tech = document.getElementById("techList");
-		this.min = 0;
-		this.max = this.tech.options.length;
-		this.idx = this.tech.selectedIndex;
-		this.pat = new RegExp(/【完】.+/);
+	class techDropdownUtil {
 
-		this.select_next = function(){
+		constructor() {
+			this.tech = document.getElementById("techList");
+			this.min = 0;
+			this.max = this.tech.options.length;
+			this.idx = this.tech.selectedIndex;
+			this.pat = new RegExp(/【完】.+/);
+		}
+
+		select_next() {
 			this.idx++;
 			if(!this.is_max_ov(this.idx)) {
 				this.tech.selectedIndex = this.idx;
@@ -21,9 +25,9 @@ javascript:(function(){
 			} else {
 				alert("これ以上進めません！");
 			}
-		};
+		}
 
-		this.select_next_uncomp = function() {
+		select_next_uncomp() {
 			this.idx++;
 			if(!this.is_max_ov(this.idx)){
 				var row = this.tech.options[this.idx].text;
@@ -35,9 +39,9 @@ javascript:(function(){
 			} else {
 				alert("これ以上進めません！");
 			}
-		};
+		}
 
-		this.select_prev = function(){
+		select_prev() {
 			this.idx--;
 			if(!this.is_min_ov(this.idx)) {
 				this.tech.selectedIndex = this.idx;
@@ -45,9 +49,9 @@ javascript:(function(){
 			} else {
 				alert("これ以上戻れません！");
 			}
-		};
+		}
 
-		this.select_prev_uncomp = function() {
+		select_prev_uncomp() {
 			this.idx--;
 			if(!this.is_min_ov(this.idx)){
 				var row = this.tech.options[this.idx].text;
@@ -59,14 +63,14 @@ javascript:(function(){
 			} else {
 				alert("これ以上戻れません！");
 			}
-		};
+		}
 
-		this.select_top = function() {
+		select_top() {
 			this.tech.selectedIndex = 1;
 			this.event_ignite(this.tech);
-		};
+		}
 
-		this.select_top_uncomp = function() {
+		select_top_uncomp() {
 			for(var i=0; i<this.tech.options.length; i++) {
 				if(i == 0) continue;
 				if(i == this.idx) continue;
@@ -77,36 +81,36 @@ javascript:(function(){
 					break;
 				}
 			}
-		};
+		}
 
-		this.select_bottom = function() {
+		select_bottom() {
 			this.tech.selectedIndex = (this.max - 1);
 			this.event_ignite(this.tech);
-		};
+		}
 
-		this.event_ignite = function(obj) {
+		event_ignite(obj) {
 				var event = document.createEvent("HTMLEvents");
 				event.initEvent("change", true, false);
 				obj.dispatchEvent(event);
-		};
+		}
 
-		this.is_max_ov = function(num){
+		is_max_ov(num) {
 			if(num >= this.max) {
 				return true;
 			} else {
 				return false;
 			}
-		};
+		}
 
-		this.is_min_ov = function(num){
+		is_min_ov(num){
 			if(num <= this.min) {
 				return true;
 			} else {
 				return false;
 			}
-		};
+		}
 
-		this.get_all_text = function() {
+		get_all_text() {
 			var str = "";
 			var pt = new RegExp(/[A-Z]+[0-9]+/);
 			for(var i=1; i<this.tech.options.length; i++) {
@@ -115,7 +119,7 @@ javascript:(function(){
 				str += opt_text + "\r\n";
 			}
 			return str;
-		};
+		}
 	}
 
 	var diag = new techDropdownUtil();
