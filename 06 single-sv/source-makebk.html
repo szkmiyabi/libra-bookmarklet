@@ -93,9 +93,17 @@ function bkm_create(){
   	var val1 = document.getElementById("bkm_comments").value;
     val1 = br_escape(val1);
       if(document.getElementsByName("bkm_comment_overwrite").item(0).checked==true) {
-        bkm_body += 'var tmpv1=document.getElementById("comments").value;';
-        bkm_body += 'document.getElementById("comments").value = tmpv1 + "\\n\\n" + \'';
-        bkm_body += val1 + '\';';
+        var ov_pos_src = document.getElementById("bkm_comment_overwrite_pos");
+        var ov_pos = ov_pos_src.getElementsByTagName("option").item(ov_pos_src.selectedIndex).value;
+        if(ov_pos === "after") {
+          bkm_body += 'var tmpv1=document.getElementById("comments").value;';
+          bkm_body += 'document.getElementById("comments").value = tmpv1 + "\\n\\n" + \'';
+          bkm_body += val1 + '\';';
+        } else {
+          bkm_body += 'var tmpv1=document.getElementById("comments").value;';
+          bkm_body += 'document.getElementById("comments").value = ' + "'" + val1 + "'";
+          bkm_body += ' + "\\n\\n" + tmpv1;';
+        }
       }else{
         bkm_body += 'document.getElementById("comments").value=\'';
         bkm_body += val1 + '\';';
@@ -175,6 +183,12 @@ function br_escape(str) {
           <label><input type="radio" name="bkm_comment_status" value="0">はい</label>
           <label><input type="radio" name="bkm_comment_status" value="1">いいえ</label>
           <label><input type="checkbox" name="bkm_comment_overwrite" value="0">追記有効</label>
+          <label>位置
+          <select id="bkm_comment_overwrite_pos">
+          <option value="after">後</option>
+          <option value="before">前</option>
+          </select>
+          </label>
           </dt>
           <dd><textarea id="bkm_comments"></textarea><br>
           <button onclick="clear_this_text('bkm_comments')">Clear</button>
