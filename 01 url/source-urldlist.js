@@ -8,7 +8,7 @@ javascript:(function(){
 		"URL一覧データタイプの指定\npageIDとURL=no-and-url、pageIDのみ=no-only",
 		"no-and-url no-only"
 	];
-	let type=prompt(msg_data[0], msg_data[1]);
+	let type=prompt(msg_data[0], msg_data[1]).trim();
 	if(!new RegExp(/(^no\-only$|^no\-and\-url$)/).test(type)) {
 		alert(type + ": 不正なオペレーション！");
 		return;
