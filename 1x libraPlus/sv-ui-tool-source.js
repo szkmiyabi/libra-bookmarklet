@@ -62,6 +62,75 @@ javascript:(function(){
 			`;
 			btn.setAttribute("onclick", btn_scr2);
 			el.parentElement.insertBefore(btn, btn1.nextSibling);
+
+			var btn2 = document.querySelector(`#comment_br_btn_${idx}`);
+			var btn = document.createElement("a");
+			btn.innerHTML = `<span class="badge badge-pill badge-primary m-l-3">再検OK</span>`;
+			btn.setAttribute("id", `svupd_ok_btn_${idx}`);
+			btn.setAttribute("href", `javascript:void(0)`);
+			var btn_scr3 = `
+				(function(){
+					var src = document.querySelector('textarea[id^="comment_${idx}"]');
+					var today = new Date();
+					var m = today.getMonth()+1;
+					var d = today.getDate();
+					var addtxt = m + '/' + d + ' 修正を確認\\r\\n' + '---' + '\\r\\n\\r\\n';
+					var sentence = src.value;
+					sentence = addtxt + sentence;
+					src.value = sentence;
+					var tr = src.parentElement.parentElement.parentElement.parentElement;
+					var slc = tr.querySelector('select[id^="result_"]');
+					slc.selectedIndex = 1;
+				})();
+			`;
+			btn.setAttribute("onclick", btn_scr3);
+			el.parentElement.insertBefore(btn, btn2.nextSibling);
+
+			var btn3 = document.querySelector(`#svupd_ok_btn_${idx}`);
+			var btn = document.createElement("a");
+			btn.innerHTML = `<span class="badge badge-pill badge-primary m-l-3">差替適合</span>`;
+			btn.setAttribute("id", `svrep_ok_btn_${idx}`);
+			btn.setAttribute("href", `javascript:void(0)`);
+			var btn_scr4 = `
+				(function(){
+					var src = document.querySelector('textarea[id^="comment_${idx}"]');
+					var today = new Date();
+					var m = today.getMonth()+1;
+					var d = today.getDate();
+					var addtxt = m + '/' + d + ' 適合に差替\\r\\n' + '---' + '\\r\\n\\r\\n';
+					var sentence = src.value;
+					sentence = addtxt + sentence;
+					src.value = sentence;
+					var tr = src.parentElement.parentElement.parentElement.parentElement;
+					var slc = tr.querySelector('select[id^="result_"]');
+					slc.selectedIndex = 1;
+				})();
+			`;
+			btn.setAttribute("onclick", btn_scr4);
+			el.parentElement.insertBefore(btn, btn3.nextSibling);
+
+			var btn4 = document.querySelector(`#svrep_ok_btn_${idx}`);
+			var btn = document.createElement("a");
+			btn.innerHTML = `<span class="badge badge-pill badge-primary m-l-3">差替注記</span>`;
+			btn.setAttribute("id", `svrep_ok2_btn_${idx}`);
+			btn.setAttribute("href", `javascript:void(0)`);
+			var btn_scr5 = `
+				(function(){
+					var src = document.querySelector('textarea[id^="comment_${idx}"]');
+					var today = new Date();
+					var m = today.getMonth()+1;
+					var d = today.getDate();
+					var addtxt = m + '/' + d + ' 適合(注記)に差替\\r\\n' + '---' + '\\r\\n\\r\\n';
+					var sentence = src.value;
+					sentence = addtxt + sentence;
+					src.value = sentence;
+					var tr = src.parentElement.parentElement.parentElement.parentElement;
+					var slc = tr.querySelector('select[id^="result_"]');
+					slc.selectedIndex = 2;
+				})();
+			`;
+			btn.setAttribute("onclick", btn_scr5);
+			el.parentElement.insertBefore(btn, btn4.nextSibling);
 		}
 
 		for(var i=0; i<src_label.length; i++) {
@@ -165,6 +234,8 @@ javascript:(function(){
 			`;
 			btn.setAttribute("onclick", btn_scr4);
 			el.parentElement.insertBefore(btn, btn3.nextSibling);
+
+
 		}
 
 		try {
